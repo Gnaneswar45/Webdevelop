@@ -1,2 +1,2 @@
 # Webdevelop
-html,css,javascripit
+Html,css,javascripit
