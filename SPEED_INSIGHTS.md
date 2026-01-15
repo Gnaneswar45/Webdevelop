@@ -9,478 +9,520 @@ To view instructions on using the Vercel Speed Insights in your project for your
 - A Vercel account. If you don't have one, you can [sign up for free](https://vercel.com/signup).
 - A Vercel project. If you don't have one, you can [create a new project](https://vercel.com/new).
 - The Vercel CLI installed. If you don't have it, you can install it using the following command:
+  <CodeBlock>
+  <Code tab="pnpm">
+  `bash
+  pnpm i vercel
+  `
+  </Code>
+  <Code tab="yarn">
+  `bash
+  yarn i vercel
+  `
+  </Code>
+  <Code tab="npm">
+  `bash
+  npm i vercel
+  `
+  </Code>
+  <Code tab="bun">
+  `bash
+  bun i vercel
+  `
+  </Code>
+  </CodeBlock>
 
-```bash
-# Using pnpm
-pnpm i vercel
+- ### Enable Speed Insights in Vercel
 
-# Using yarn
-yarn i vercel
+  On the [Vercel dashboard](/dashboard), select your Project followed by the **Speed Insights** tab. You can also select the button below to be taken there. Then, select **Enable** from the dialog.
 
-# Using npm
-npm i vercel
+  > **💡 Note:** Enabling Speed Insights will add new routes (scoped
+  > at`/_vercel/speed-insights/*`) after your next deployment.
 
-# Using bun
-bun i vercel
-```
+- ### Add `@vercel/speed-insights` to your project
 
-## Setup Steps
+  > For ['nextjs', 'nextjs-app', 'sveltekit', 'remix', 'create-react-app', 'nuxt', 'vue', 'other', 'astro']:
+  > Using the package manager of your choice, add the `@vercel/speed-insights` package to your project:
+  > <CodeBlock> > <Code tab="pnpm">
 
-### Enable Speed Insights in Vercel
+      ```bash
+      pnpm i @vercel/speed-insights
+      ```
 
-On the [Vercel dashboard](/dashboard), select your Project followed by the **Speed Insights** tab. You can also select the button below to be taken there. Then, select **Enable** from the dialog.
+    </Code>
+    <Code tab="yarn">
+      ```bash
+      yarn i @vercel/speed-insights
+      ```
+    </Code>
+    <Code tab="npm">
+      ```bash
+      npm i @vercel/speed-insights
+      ```
+    </Code>
+    <Code tab="bun">
+      ```bash
+      bun i @vercel/speed-insights
+      ```
+    </Code>
+  </CodeBlock>
+  > For ['html']:
+  > **💡 Note:** When using the HTML implementation, there is no need to install the
+  > `@vercel/speed-insights` package.
 
-> **💡 Note:** Enabling Speed Insights will add new routes (scoped at `/_vercel/speed-insights/*`) after your next deployment.
+- > For [ >   'nextjs',
+  >   'nextjs-app',
+  >   'remix',
+  >   'create-react-app',
+  >   'nuxt',
+  >   'vue',
+  >   'astro',
+  >   ]:
 
-### Add `@vercel/speed-insights` to your project
+  ### Add the `SpeedInsights` component to your app
 
-> **Note:** When using the HTML implementation, there is no need to install the `@vercel/speed-insights` package.
+  > For ['sveltekit', 'other']:
 
-Using the package manager of your choice, add the `@vercel/speed-insights` package to your project:
+  ### Call the `injectSpeedInsights` function in your app
 
-```bash
-# Using pnpm
-pnpm i @vercel/speed-insights
+  > For ['html']:
 
-# Using yarn
-yarn i @vercel/speed-insights
+  ### Add the `script` tag to your site
 
-# Using npm
-npm i @vercel/speed-insights
+  > For ['nextjs']:
+  > The `SpeedInsights` component is a wrapper around the tracking script, offering more seamless integration with Next.js.
 
-# Using bun
-bun i @vercel/speed-insights
-```
+  The instructions differ based on which version of Next.js you're deploying.
 
-### Add the `SpeedInsights` component to your app
+  Add the following component to your main app file:
 
-#### For Next.js (Pages Router)
+  ```ts {2, 8} filename="pages/_app.tsx" framework=nextjs
+  import type { AppProps } from 'next/app';
+  import { SpeedInsights } from '@vercel/speed-insights/next';
 
-The `SpeedInsights` component is a wrapper around the tracking script, offering more seamless integration with Next.js.
-
-Add the following component to your main app file:
-
-```tsx
-// pages/_app.tsx
-import type { AppProps } from 'next/app';
-import { SpeedInsights } from '@vercel/speed-insights/next';
-
-function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <>
-      <Component {...pageProps} />
-      <SpeedInsights />
-    </>
-  );
-}
-
-export default MyApp;
-```
-
-```jsx
-// pages/_app.jsx
-import { SpeedInsights } from "@vercel/speed-insights/next";
-
-function MyApp({ Component, pageProps }) {
-  return (
-    <>
-      <Component {...pageProps} />
-      <SpeedInsights />
-    </>
-  );
-}
-
-export default MyApp;
-```
-
-For versions of Next.js older than 13.5, import the `<SpeedInsights>` component from `@vercel/speed-insights/react`. Then pass it the pathname of the route, as shown below:
-
-```tsx
-// pages/example-component.tsx
-import { SpeedInsights } from "@vercel/speed-insights/react";
-import { useRouter } from "next/router";
-
-export default function Layout() {
-  const router = useRouter();
-
-  return <SpeedInsights route={router.pathname} />;
-}
-```
-
-```jsx
-// pages/example-component.jsx
-import { SpeedInsights } from "@vercel/speed-insights/react";
-import { useRouter } from "next/router";
-
-export default function Layout() {
-  const router = useRouter();
-
-  return <SpeedInsights route={router.pathname} />;
-}
-```
-
-#### For Next.js (App Router)
-
-The `SpeedInsights` component is a wrapper around the tracking script, offering more seamless integration with Next.js.
-
-Add the following component to the root layout:
-
-```tsx
-// app/layout.tsx
-import { SpeedInsights } from "@vercel/speed-insights/next";
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="en">
-      <head>
-        <title>Next.js</title>
-      </head>
-      <body>
-        {children}
+  function MyApp({ Component, pageProps }: AppProps) {
+    return (
+      <>
+        <Component {...pageProps} />
         <SpeedInsights />
-      </body>
-    </html>
-  );
-}
-```
-
-```jsx
-// app/layout.jsx
-import { SpeedInsights } from "@vercel/speed-insights/next";
-
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <head>
-        <title>Next.js</title>
-      </head>
-      <body>
-        {children}
-        <SpeedInsights />
-      </body>
-    </html>
-  );
-}
-```
-
-For versions of Next.js older than 13.5, import the `<SpeedInsights>` component from `@vercel/speed-insights/react`.
-
-Create a dedicated component to avoid opting out from SSR on the layout and pass the pathname of the route to the `SpeedInsights` component:
-
-```tsx
-// app/insights.tsx
-"use client";
-
-import { SpeedInsights } from "@vercel/speed-insights/react";
-import { usePathname } from "next/navigation";
-
-export function Insights() {
-  const pathname = usePathname();
-
-  return <SpeedInsights route={pathname} />;
-}
-```
-
-```jsx
-// app/insights.jsx
-"use client";
-
-import { SpeedInsights } from "@vercel/speed-insights/react";
-import { usePathname } from "next/navigation";
-
-export function Insights() {
-  const pathname = usePathname();
-
-  return <SpeedInsights route={pathname} />;
-}
-```
-
-Then, import the `Insights` component in your layout:
-
-```tsx
-// app/layout.tsx
-import type { ReactNode } from "react";
-import { Insights } from "./insights";
-
-export default function RootLayout({ children }: { children: ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <title>Next.js</title>
-      </head>
-      <body>
-        {children}
-        <Insights />
-      </body>
-    </html>
-  );
-}
-```
-
-```jsx
-// app/layout.jsx
-import { Insights } from "./insights";
-
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <head>
-        <title>Next.js</title>
-      </head>
-      <body>
-        {children}
-        <Insights />
-      </body>
-    </html>
-  );
-}
-```
-
-#### For Create React App
-
-The `SpeedInsights` component is a wrapper around the tracking script, offering more seamless integration with React.
-
-Add the following component to the main app file:
-
-```tsx
-// App.tsx
-import { SpeedInsights } from '@vercel/speed-insights/react';
-
-export default function App() {
-  return (
-    <div>
-      {/* ... */}
-      <SpeedInsights />
-    </div>
-  );
-}
-```
-
-```jsx
-// App.jsx
-import { SpeedInsights } from "@vercel/speed-insights/react";
-
-export default function App() {
-  return (
-    <div>
-      {/* ... */}
-      <SpeedInsights />
-    </div>
-  );
-}
-```
-
-#### For Remix
-
-The `SpeedInsights` component is a wrapper around the tracking script, offering a seamless integration with Remix.
-
-Add the following component to your root file:
-
-```tsx
-// app/root.tsx
-import { SpeedInsights } from '@vercel/speed-insights/remix';
-
-export default function App() {
-  return (
-    <html lang="en">
-      <body>
-        {/* ... */}
-        <SpeedInsights />
-      </body>
-    </html>
-  );
-}
-```
-
-```jsx
-// app/root.jsx
-import { SpeedInsights } from "@vercel/speed-insights/remix";
-
-export default function App() {
-  return (
-    <html lang="en">
-      <body>
-        {/* ... */}
-        <SpeedInsights />
-      </body>
-    </html>
-  );
-}
-```
-
-#### For SvelteKit
-
-Add the following code to your root layout file:
-
-```ts
-// src/routes/+layout.ts
-import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
-
-injectSpeedInsights();
-```
-
-```js
-// src/routes/+layout.js
-import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
-
-injectSpeedInsights();
-```
-
-#### For HTML
-
-Add the following scripts before the closing tag of the `<body>`:
-
-```html
-<!-- index.html -->
-<script>
-  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/speed-insights/script.js"></script>
-```
-
-#### For Vue
-
-The `SpeedInsights` component is a wrapper around the tracking script, offering more seamless integration with Vue.
-
-Add the following component to the main app template:
-
-```vue
-<!-- src/App.vue -->
-<script setup lang="ts">
-import { SpeedInsights } from '@vercel/speed-insights/vue';
-</script>
-
-<template>
-  <SpeedInsights />
-</template>
-```
-
-```vue
-<!-- src/App.vue -->
-<script setup>
-import { SpeedInsights } from '@vercel/speed-insights/vue';
-</script>
-
-<template>
-  <SpeedInsights />
-</template>
-```
-
-#### For Nuxt
-
-The `SpeedInsights` component is a wrapper around the tracking script, offering more seamless integration with Nuxt.
-
-Add the following component to the default layout:
-
-```vue
-<!-- layouts/default.vue -->
-<script setup lang="ts">
-import { SpeedInsights } from '@vercel/speed-insights/vue';
-</script>
-
-<template>
-  <SpeedInsights />
-</template>
-```
-
-```vue
-<!-- layouts/default.vue -->
-<script setup>
-import { SpeedInsights } from '@vercel/speed-insights/vue';
-</script>
-
-<template>
-  <SpeedInsights />
-</template>
-```
-
-#### For Other Frameworks
-
-Import the `injectSpeedInsights` function from the package, which will add the tracking script to your app. **This should only be called once in your app, and must run in the client**.
-
-Add the following code to your main app file:
-
-```ts
-// main.ts
-import { injectSpeedInsights } from "@vercel/speed-insights";
-
-injectSpeedInsights();
-```
-
-```js
-// main.js
-import { injectSpeedInsights } from "@vercel/speed-insights";
-
-injectSpeedInsights();
-```
-
-#### For Astro
-
-Speed Insights is available for both static and SSR Astro apps.
-
-To enable this feature, declare the `<SpeedInsights />` component from `@vercel/speed-insights/astro` near the bottom of one of your layout components, such as `BaseHead.astro`:
-
-```astro
---- 
-// BaseHead.astro
-import SpeedInsights from '@vercel/speed-insights/astro';
-const { title, description } = Astro.props;
----
-<title>{title}</title>
-<meta name="title" content={title} />
-<meta name="description" content={description} />
-
-<SpeedInsights />
-```
-
-Optionally, you can remove sensitive information from the URL by adding a `speedInsightsBeforeSend` function to the global `window` object. The `<SpeedInsights />` component will call this method before sending any data to Vercel:
-
-```astro
---- 
-// BaseHead.astro
-import SpeedInsights from '@vercel/speed-insights/astro';
-const { title, description } = Astro.props;
----
-<title>{title}</title>
-<meta name="title" content={title} />
-<meta name="description" content={description} />
-
-<script is:inline>
-  function speedInsightsBeforeSend(data){
-    console.log("Speed Insights before send", data)
-    return data;
+      </>
+    );
   }
-</script>
-<SpeedInsights />
-```
 
-[Learn more about `beforeSend`](/docs/speed-insights/package#beforesend).
+  export default MyApp;
+  ```
 
-### Deploy your app to Vercel
+  ```js {1, 7} filename="pages/_app.jsx" framework=nextjs
+  import { SpeedInsights } from "@vercel/speed-insights/next";
 
-You can deploy your app to Vercel's global CDN by running the following command from your terminal:
+  function MyApp({ Component, pageProps }) {
+    return (
+      <>
+        <Component {...pageProps} />
+        <SpeedInsights />
+      </>
+    );
+  }
 
-```bash
-vercel deploy
-```
+  export default MyApp;
+  ```
 
-Alternatively, you can [connect your project's git repository](/docs/git#deploying-a-git-repository), which will enable Vercel to deploy your latest pushes and merges to main.
+  For versions of Next.js older than 13.5, import the `<SpeedInsights>` component from `@vercel/speed-insights/react`. Then pass it the pathname of the route, as shown below:
 
-Once your app is deployed, it's ready to begin tracking performance metrics.
+  ```tsx {1, 7} filename="pages/example-component.tsx" framework=nextjs
+  import { SpeedInsights } from "@vercel/speed-insights/react";
+  import { useRouter } from "next/router";
 
-> **💡 Note:** If everything is set up correctly, you should be able to find the `/_vercel/speed-insights/script.js` script inside the body tag of your page.
+  export default function Layout() {
+    const router = useRouter();
 
-### View your data in the dashboard
+    return <SpeedInsights route={router.pathname} />;
+  }
+  ```
 
-Once your app is deployed, and users have visited your site, you can view the data in the dashboard.
+  ```jsx {1, 7} filename="pages/example-component.jsx" framework=nextjs
+  import { SpeedInsights } from "@vercel/speed-insights/react";
+  import { useRouter } from "next/router";
 
-To do so, go to your [dashboard](/dashboard), select your project, and click the **Speed Insights** tab.
+  export default function Layout() {
+    const router = useRouter();
 
-After a few days of visitors, you'll be able to start exploring your metrics. For more information on how to use Speed Insights, see [Using Speed Insights](/docs/speed-insights/using-speed-insights).
+    return <SpeedInsights route={router.pathname} />;
+  }
+  ```
+
+  > For ['nextjs-app']:
+  > The `SpeedInsights` component is a wrapper around the tracking script, offering more seamless integration with Next.js.
+
+  Add the following component to the root layout:
+
+  Add the following component to your main app file:
+
+  ```tsx {1, 15} filename="app/layout.tsx" framework=nextjs-app
+  import { SpeedInsights } from "@vercel/speed-insights/next";
+
+  export default function RootLayout({
+    children,
+  }: {
+    children: React.ReactNode;
+  }) {
+    return (
+      <html lang="en">
+        <head>
+          <title>Next.js</title>
+        </head>
+        <body>
+          {children}
+          <SpeedInsights />
+        </body>
+      </html>
+    );
+  }
+  ```
+
+  ```jsx {1, 15} filename="app/layout.jsx" framework=nextjs-app
+  import { SpeedInsights } from "@vercel/speed-insights/next";
+
+  export default function RootLayout({ children }) {
+    return (
+      <html lang="en">
+        <head>
+          <title>Next.js</title>
+        </head>
+        <body>
+          {children}
+          <SpeedInsights />
+        </body>
+      </html>
+    );
+  }
+  ```
+
+  For versions of Next.js older than 13.5, import the `<SpeedInsights>` component from `@vercel/speed-insights/react`.
+
+  Create a dedicated component to avoid opting out from SSR on the layout and pass the pathname of the route to the `SpeedInsights` component:
+
+  ```tsx filename="app/insights.tsx" framework=nextjs-app
+  "use client";
+
+  import { SpeedInsights } from "@vercel/speed-insights/react";
+  import { usePathname } from "next/navigation";
+
+  export function Insights() {
+    const pathname = usePathname();
+
+    return <SpeedInsights route={pathname} />;
+  }
+  ```
+
+  ```jsx filename="app/insights.jsx" framework=nextjs-app
+  "use client";
+
+  import { SpeedInsights } from "@vercel/speed-insights/react";
+  import { usePathname } from "next/navigation";
+
+  export function Insights() {
+    const pathname = usePathname();
+
+    return <SpeedInsights route={pathname} />;
+  }
+  ```
+
+  Then, import the `Insights` component in your layout:
+
+  ```tsx {1} filename="app/layout.tsx" framework=nextjs-app
+  import type { ReactNode } from "react";
+  import { Insights } from "./insights";
+
+  export default function RootLayout({ children }: { children: ReactNode }) {
+    return (
+      <html lang="en">
+        <head>
+          <title>Next.js</title>
+        </head>
+        <body>
+          {children}
+          <Insights />
+        </body>
+      </html>
+    );
+  }
+  ```
+
+  ```jsx {1} filename="app/layout.jsx" framework=nextjs-app
+  import { Insights } from "./insights";
+
+  export default function RootLayout({ children }) {
+    return (
+      <html lang="en">
+        <head>
+          <title>Next.js</title>
+        </head>
+        <body>
+          {children}
+          <Insights />
+        </body>
+      </html>
+    );
+  }
+  ```
+
+  > For ['create-react-app']:
+  > The `SpeedInsights` component is a wrapper around the tracking script, offering more seamless integration with React.
+
+  Add the following component to the main app file.
+
+  ```ts {1, 7} filename="App.tsx" framework=create-react-app
+  import { SpeedInsights } from '@vercel/speed-insights/react';
+
+  export default function App() {
+    return (
+      <div>
+        {/* ... */}
+        <SpeedInsights />
+      </div>
+    );
+  }
+  ```
+
+  ```js {1, 7} filename="App.jsx" framework=create-react-app
+  import { SpeedInsights } from "@vercel/speed-insights/react";
+
+  export default function App() {
+    return (
+      <div>
+        {/* ... */}
+        <SpeedInsights />
+      </div>
+    );
+  }
+  ```
+
+  > For ['remix']:
+  > The `SpeedInsights` component is a wrapper around the tracking script, offering a seamless integration with Remix.
+
+  Add the following component to your root file:
+
+  ```ts {1, 8} filename="app/root.tsx" framework=remix
+  import { SpeedInsights } from '@vercel/speed-insights/remix';
+
+  export default function App() {
+    return (
+      <html lang="en">
+        <body>
+          {/* ... */}
+          <SpeedInsights />
+        </body>
+      </html>
+    );
+  }
+  ```
+
+  ```js {1, 8} filename="app/root.jsx" framework=remix
+  import { SpeedInsights } from "@vercel/speed-insights/remix";
+
+  export default function App() {
+    return (
+      <html lang="en">
+        <body>
+          {/* ... */}
+          <SpeedInsights />
+        </body>
+      </html>
+    );
+  }
+  ```
+
+  > For ['sveltekit']:
+  > Add the following component to your root file:
+
+  ```ts filename="src/routes/+layout.ts" framework=sveltekit
+  import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
+
+  injectSpeedInsights();
+  ```
+
+  ```js filename="src/routes/+layout.js" framework=sveltekit
+  import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
+
+  injectSpeedInsights();
+  ```
+
+  > For ['html']:
+  > Add the following scripts before the closing tag of the `<body>`:
+
+  ```ts filename="index.html" framework=html
+  <script>
+    window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
+  ```
+
+  ```js filename="index.html" framework=html
+  <script>
+    window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
+  ```
+
+  > For ['vue']:
+  > The `SpeedInsights` component is a wrapper around the tracking script, offering more seamless integration with Vue.
+
+  Add the following component to the main app template.
+
+  ```ts {2, 6} filename="src/App.vue" framework=vue
+  <script setup lang="ts">
+  import { SpeedInsights } from '@vercel/speed-insights/vue';
+  </script>
+
+  <template>
+    <SpeedInsights />
+  </template>
+  ```
+
+  ```js {2, 6} filename="src/App.vue" framework=vue
+  <script setup>
+  import { SpeedInsights } from '@vercel/speed-insights/vue';
+  </script>
+
+  <template>
+    <SpeedInsights />
+  </template>
+  ```
+
+  > For ['nuxt']:
+  > The `SpeedInsights` component is a wrapper around the tracking script, offering more seamless integration with Nuxt.
+
+  Add the following component to the default layout.
+
+  ```ts {2, 6} filename="layouts/default.vue" framework=nuxt
+  <script setup lang="ts">
+  import { SpeedInsights } from '@vercel/speed-insights/vue';
+  </script>
+
+  <template>
+    <SpeedInsights />
+  </template>
+  ```
+
+  ```js {2, 6} filename="layouts/default.vue" framework=nuxt
+  <script setup>
+  import { SpeedInsights } from '@vercel/speed-insights/vue';
+  </script>
+
+  <template>
+    <SpeedInsights />
+  </template>
+  ```
+
+  > For ['other']:
+  > Import the `injectSpeedInsights` function from the package, which will add the tracking script to your app. **This should only be called once in your app, and must run in the client**.
+
+  Add the following code to your main app file:
+
+  ```ts filename="main.ts" framework=other
+  import { injectSpeedInsights } from "@vercel/speed-insights";
+
+  injectSpeedInsights();
+  ```
+
+  ```js filename="main.js" framework=other
+  import { injectSpeedInsights } from "@vercel/speed-insights";
+
+  injectSpeedInsights();
+  ```
+
+  > For ['astro']:
+  > Speed Insights is available for both [static](/docs/frameworks/astro#static-rendering) and [SSR](/docs/frameworks/astro#server-side-rendering) Astro apps.
+
+  To enable this feature, declare the `<SpeedInsights />` component from `@vercel/speed-insights/astro` near the bottom of one of your layout components, such as `BaseHead.astro`:
+
+  ```tsx filename="BaseHead.astro" framework=astro
+  ---
+  import SpeedInsights from '@vercel/speed-insights/astro';
+  const { title, description } = Astro.props;
+  ---
+  <title>{title}</title>
+  <meta name="title" content={title} />
+  <meta name="description" content={description} />
+
+  <SpeedInsights />
+  ```
+
+  ```jsx filename="BaseHead.astro" framework=astro
+  ---
+  import SpeedInsights from '@vercel/speed-insights/astro';
+  const { title, description } = Astro.props;
+  ---
+  <title>{title}</title>
+  <meta name="title" content={title} />
+  <meta name="description" content={description} />
+
+  <SpeedInsights />
+  ```
+
+  Optionally, you can remove sensitive information from the URL by adding a `speedInsightsBeforeSend` function to the global `window` object. The `<SpeedInsights />` component will call this method before sending any data to Vercel:
+
+  ```tsx filename="BaseHead.astro" framework=astro
+  ---
+  import SpeedInsights from '@vercel/speed-insights/astro';
+  const { title, description } = Astro.props;
+  ---
+  <title>{title}</title>
+  <meta name="title" content={title} />
+  <meta name="description" content={description} />
+
+  <script is:inline>
+    function speedInsightsBeforeSend(data){
+      console.log("Speed Insights before send", data)
+      return data;
+    }
+  </script>
+  <SpeedInsights />
+  ```
+
+  ```jsx filename="BaseHead.astro" framework=astro
+  ---
+  import SpeedInsights from '@vercel/speed-insights/astro';
+  const { title, description } = Astro.props;
+  ---
+  <title>{title}</title>
+  <meta name="title" content={title} />
+  <meta name="description" content={description} />
+
+  <script is:inline>
+    function speedInsightsBeforeSend(data){
+      console.log("Speed Insights before send", data)
+      return data;
+    }
+  </script>
+  <SpeedInsights />
+  ```
+
+  [Learn more about `beforeSend`](/docs/speed-insights/package#beforesend).
+
+- ### Deploy your app to Vercel
+
+  You can deploy your app to Vercel's global [CDN](/docs/cdn) by running the following command from your terminal:
+
+  ```bash filename="terminal"
+  vercel deploy
+  ```
+
+  Alternatively, you can [connect your project's git repository](/docs/git#deploying-a-git-repository), which will enable Vercel to deploy your latest pushes and merges to main.
+
+  Once your app is deployed, it's ready to begin tracking performance metrics.
+
+  > **💡 Note:** If everything is set up correctly, you should be able to find the
+  > `/_vercel/speed-insights/script.js` script inside the body tag of your page.
+
+- ### View your data in the dashboard
+
+  Once your app is deployed, and users have visited your site, you can view the data in the dashboard.
+
+  To do so, go to your [dashboard](/dashboard), select your project, and click the **Speed Insights** tab.
+
+  After a few days of visitors, you'll be able to start exploring your metrics. For more information on how to use Speed Insights, see [Using Speed Insights](/docs/speed-insights/using-speed-insights).
 
 Learn more about how Vercel supports [privacy and data compliance standards](/docs/speed-insights/privacy-policy) with Vercel Speed Insights.
 
